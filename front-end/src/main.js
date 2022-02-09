@@ -3,7 +3,7 @@ import App from './App.vue'
 
 // import axios from 'axios'
 // axios.defaults.baseURL = process.env.VUE_APP_API_URL;
-// Vue.prototype.$http = axios
+// Vue.prototype.$http = axios;
 
 // import axios from 'axios'
 // import VueAxios from 'vue-axios'

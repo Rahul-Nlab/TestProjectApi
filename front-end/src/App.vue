@@ -44,7 +44,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from 'axios';
 export default {
   name: "App",
   data() {
@@ -58,20 +58,20 @@ export default {
     };
   },
   mounted() {
-    // console.log(this.axios);
+    // console.log(axios);
     // this.getUsers();
     this.function();
   },
   methods: {
     async getUsers() {
       // try {
-      //   const response = await this.axios.get("http://localhost:5434/v1/users/");
+      //   const response = await axios.get("http://localhost:5434/v1/users/");
       //   this.newVar = response.data
       //   console.log(response.data);
       // } catch(e) {
       // } finally {
       // }
-      this.axios.get("http://localhost:5434/v1/users/").then( response =>
+      axios.get("http://localhost:5434/v1/users/").then( response =>
         this.newVar = response.data
         // console.log(this.newVar);
         // console.log(response.data),
@@ -88,13 +88,13 @@ export default {
     },
     testGetIdFunction(id) {
       var url = 'http://localhost:5434/v1/users/' + id
-      this.axios.get(url). then (response =>
+      axios.get(url). then (response =>
         this.specificUser = response.data
       )
     },
     async deleteUserId (id) {
       var url = 'http://localhost:5434/v1/users/' + id + '/'
-      await this.axios.delete(url).then(
+      await axios.delete(url).then(
         response =>
         this.reqResponse = response.data,
       );
@@ -103,7 +103,7 @@ export default {
     },
     // async newUser (id) {
     //   var url = 'http://localhost:5434/v1/users/' + id + '/'
-    //   await this.axios.put(url, INPUT_HERE_IN_JSON_FORMAT).then( response =>
+    //   await axios.put(url, INPUT_HERE_IN_JSON_FORMAT).then( response =>
     //   // console.log(response);
     //   this.reqResponse = response.data,
     //   );
