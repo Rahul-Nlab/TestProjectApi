@@ -17,9 +17,11 @@ func main() {
 	db := databases.Setup()
 	defer db.Close()
 
-	h := handlers.Handlers{
-		User: business.New(db),
-	}
+	// h := handlers.Handlers{
+	// 	User: business.New(db),
+	// }
+
+	h := handlers.New(business.New(db))
 
 	router := mux.NewRouter()
 
@@ -42,4 +44,3 @@ func main() {
 
 	log.Fatal(http.ListenAndServe(":5434", muxhan.CORS(headersOk, originsOk, methodsOk)(router)))
 }
-

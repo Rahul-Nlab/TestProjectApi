@@ -18,8 +18,14 @@ func CheckErr(e error) {
 }
 
 type Handlers struct {
-	User business.HttpHandlers
+	user business.HttpHandlers
 	//PENDING
+}
+
+func New(user business.HttpHandlers) Handlers {
+	return Handlers{
+		user: user,
+	}
 }
 
 func (h Handlers) GetUsersRequest(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +36,7 @@ func (h Handlers) GetUsersRequest(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	userStruct, e := h.User.GetUsers(id)
+	userStruct, e := h.user.GetUsers(id)
 
 	if e != "" {
 		w.Write([]byte(e))
@@ -50,12 +56,12 @@ func (h Handlers) CreateUserRequest(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Please enter a valid json input!"))
 	}
 
-	str := h.User.CreateUsers(id, reqBody)
+	str := h.user.CreateUsers(id, reqBody)
 	w.Write([]byte(str))
 	fmt.Println("User POST served")
 }
 
-func (h Handlers) ChangeUserRequest(w http.ResponseWriter, r *http.Request) {	
+func (h Handlers) ChangeUserRequest(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -65,7 +71,7 @@ func (h Handlers) ChangeUserRequest(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Please enter a valid json input!"))
 	}
 
-	str := h.User.ChangeUser(id, reqBody)
+	str := h.user.ChangeUser(id, reqBody)
 
 	w.Write([]byte(str))
 	fmt.Println("User PUT served")
@@ -76,7 +82,7 @@ func (h Handlers) DeleteUserRequest(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	str := h.User.DeleteUser(id)
+	str := h.user.DeleteUser(id)
 
 	w.Write([]byte(str))
 	fmt.Println("User DELETE served")
