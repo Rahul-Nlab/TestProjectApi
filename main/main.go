@@ -1,5 +1,6 @@
 package main
 
+//this is all packages
 import (
 	"fmt"
 	"log"
