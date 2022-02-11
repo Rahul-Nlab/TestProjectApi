@@ -32,8 +32,11 @@ func main() {
 
 	router.HandleFunc("/v1/users/", h.CreateUserRequest).Methods(http.MethodPost)
 	router.HandleFunc("/v1/users/{id}/", h.CreateUserRequest).Methods(http.MethodPost)
+
 	router.HandleFunc("/v1/users/{id}/", h.ChangeUserRequest).Methods(http.MethodPut)
 	router.HandleFunc("/v1/users/{id}/", h.DeleteUserRequest).Methods(http.MethodDelete)
+
+	router.HandleFunc("/v1/users/{id}/addresses/", h.GetAddressesRequest).Methods(http.MethodGet)
 
 	// router.HandleFunc("/v1/addresses/", h.GetAddresses).Methods(http.MethodGet)
 	// router.HandleFunc("/v1/addresses/", h.CreateAddresses).Methods(http.MethodPost)
@@ -41,8 +44,6 @@ func main() {
 	headersOk := muxhan.AllowedHeaders([]string{"*"})
 	originsOk := muxhan.AllowedOrigins([]string{"*"})
 	methodsOk := muxhan.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE"})
-
-	// methodsOk := muxhan.AllowedMethods([]string{"*"})
 
 	log.Fatal(http.ListenAndServe(":5434", muxhan.CORS(headersOk, originsOk, methodsOk)(router)))
 }

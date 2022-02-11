@@ -7,17 +7,17 @@ import (
 	"strconv"
 )
 
-type HttpHandlers struct {
+type Business struct {
 	db *sql.DB
 }
 
-func New(db *sql.DB) HttpHandlers {
-	return HttpHandlers{
+func New(db *sql.DB) Business {
+	return Business{
 		db: db,
 	}
 }
 
-func (h HttpHandlers) GetUsers(id string) ([]Users, string) {
+func (h Business) GetUsers(id string) ([]Users, string) {
 	var intId int
 	var str string
 
@@ -27,9 +27,9 @@ func (h HttpHandlers) GetUsers(id string) ([]Users, string) {
 		if err != nil {
 			return nil, "Index id must be a valid integer!"
 		}
-		str = "SELECT * FROM Users WHERE u_id = $1"
+		str = "SELECT * FROM Users WHERE u_id = $1 ORDER BY u_id ASC"
 	} else {
-		str = "SELECT * FROM Users WHERE $1 = $1"
+		str = "SELECT * FROM Users WHERE $1 = $1 ORDER BY u_id ASC"
 	}
 
 	rows, err := h.db.Query(str, intId)
@@ -57,7 +57,7 @@ func (h HttpHandlers) GetUsers(id string) ([]Users, string) {
 	return UserStruct, ""
 }
 
-func (h HttpHandlers) CreateUsers(id string, reqBody []byte) string {
+func (h Business) CreateUsers(id string, reqBody []byte) string {
 	var intId int
 	var str string
 	var newUser Users
@@ -86,8 +86,8 @@ func (h HttpHandlers) CreateUsers(id string, reqBody []byte) string {
 	return "Successfully added!"
 }
 
-func (h HttpHandlers) ChangeUser(id string, reqBody []byte) string {
-	var intId int
+func (h Business) ChangeUser(id string, reqBody []byte) string {
+	// var intId int
 	var str string
 	var updatedUser Users
 	json.Unmarshal(reqBody, &updatedUser)
@@ -96,8 +96,8 @@ func (h HttpHandlers) ChangeUser(id string, reqBody []byte) string {
 		return "Please enter a User Id for updating an entry."
 	}
 
-	var err error
-	intId, err = strconv.Atoi(id)
+	// var err error
+	intId, err := strconv.Atoi(id)
 
 	if err != nil {
 		return "Index id must be a valid integer!"
@@ -114,7 +114,7 @@ func (h HttpHandlers) ChangeUser(id string, reqBody []byte) string {
 
 }
 
-func (h HttpHandlers) DeleteUser(id string) string {
+func (h Business) DeleteUser(id string) string {
 
 	if id == "" {
 		return "Please enter a User Id for deleting an entry."
@@ -152,3 +152,50 @@ func (h HttpHandlers) DeleteUser(id string) string {
 	}
 
 }
+
+func (h Business) AddressOfUser(id string) ([]Addresses, string) {
+
+	if id == "" {
+		return nil, "Please enter a User Id for fetching addresses"
+	}
+
+	intId, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, "Index id must be a valid integer from add!"
+	}
+
+	rows, err := h.db.Query("SELECT * FROM Addresses where a_id in (select a_id from users_addresses where u_id = $1); ", intId)
+	// fmt.Println("%+v",rows)
+	// cRows := rows
+	if err != nil {
+		// return "Here's the problem..........."
+		return nil, err.Error()
+	}
+
+	defer rows.Close()
+
+	userAddresses := make([]Addresses, 0)
+
+	for rows.Next() {
+		var addressPincode, addressId int
+		var addressStreet, addressArea, addressCity string
+
+		err := rows.Scan(&addressId, &addressStreet, &addressArea, &addressPincode, &addressCity)
+		if err != nil {
+			return nil, err.Error()
+		}
+
+		userAddresses = append(userAddresses, Addresses{A_id: addressId, Street: addressStreet, Area: addressArea, Pincode: addressPincode, City: addressCity})
+	}
+
+	return userAddresses, ""
+
+}
+
+// type Addresses struct {
+// 	A_id    int    `json:"a_id"`
+// 	Street  string `json:"street"`
+// 	Area    string `json:"area"`
+// 	Pincode int    `json:"pincode"`
+// 	City    string `json:"city"`
+// }

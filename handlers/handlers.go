@@ -18,32 +18,66 @@ func CheckErr(e error) {
 }
 
 type Handlers struct {
-	user business.HttpHandlers
+	user business.Business
 	//PENDING
 }
 
-func New(user business.HttpHandlers) Handlers {
+func New(user business.Business) Handlers {
 	return Handlers{
 		user: user,
 	}
 }
 
 func (h Handlers) GetUsersRequest(w http.ResponseWriter, r *http.Request) {
-
-	// w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+	
+	fmt.Println("User GET served")
+	// w.Header().Set("Access-Control-Allow-Origin", r.Header.Ge`t("Origin"))
 	// w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	
+	vars := mux.Vars(r)
+	id := vars["id"]
+	
+	userStruct, e := h.user.GetUsers(id)
+	
+	if e != "" {
+		w.Write([]byte(e))
+		return
+	}
+	
+	json.NewEncoder(w).Encode(userStruct)
+}
+
+func (h Handlers) GetAddressesRequest(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("User Addresses GET served")
 
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	userStruct, e := h.user.GetUsers(id)
+	addressStruct, e := h.user.AddressOfUser(id)
 
 	if e != "" {
 		w.Write([]byte(e))
 		return
 	}
-	json.NewEncoder(w).Encode(userStruct)
-	fmt.Println("User GET served")
+
+	json.NewEncoder(w).Encode(addressStruct)
+
+// NOW, THIS HAS TO BE TRANSFERED TO THE BUSINESS PORTION
+// 	w.Write([]byte(str))
+	
+// 	fmt.Println("Getting Address Data...")
+// 	rows, err := h.Db.Query("SELECT * FROM Addresses")
+// 	CheckErr(err)
+// 	var tempAddressStruct []Addresses
+// 	for rows.Next() {
+// 		var addressId, pincode int
+// 		var street, area, city string
+
+// 		err = rows.Scan(&addressId, &street, &area, &pincode, &city)
+// 		CheckErr(err)
+
+// 		tempAddressStruct = append(tempAddressStruct, Addresses{A_id: addressId, Street: street, Area: area, Pincode: pincode, City: city})
+// 	}
 }
 
 func (h Handlers) CreateUserRequest(w http.ResponseWriter, r *http.Request) {
@@ -87,25 +121,6 @@ func (h Handlers) DeleteUserRequest(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(str))
 	fmt.Println("User DELETE served")
 }
-
-// func (h HttpHandlers) GetAddresses(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Println("Getting Address Data...")
-// 	rows, err := h.Db.Query("SELECT * FROM Addresses")
-// 	CheckErr(err)
-// 	var tempAddressStruct []Addresses
-// 	for rows.Next() {
-// 		var addressId, pincode int
-// 		var street, area, city string
-
-// 		err = rows.Scan(&addressId, &street, &area, &pincode, &city)
-// 		CheckErr(err)
-
-// 		tempAddressStruct = append(tempAddressStruct, Addresses{A_id: addressId, Street: street, Area: area, Pincode: pincode, City: city})
-// 	}
-
-// 	json.NewEncoder(w).Encode(tempAddressStruct)
-// 	fmt.Println("Done!")
-// // }
 
 // func (h HttpHandlers) CreateAddresses(w http.ResponseWriter, r *http.Request) {
 // 	fmt.Println("Reading the request...")
