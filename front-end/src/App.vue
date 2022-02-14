@@ -25,14 +25,13 @@
           <div class="tableLastName"> {{i.last_name}} </div>
 
           <div class="tableActions">
-<!-- @click= "seeAddress(i), showAddressForm()" -->
+
             <button @click="getUserAddresses(i), showAddForm(), closeEditForm(), setShow()"> Show Address </button>
                   &emsp;
             <button v-on:click="setEditValues(i), showEditForm(), hideAddForm()"> Edit </button>
-            <!-- editUserId(i.u_id), -->
                   &emsp;
             <button v-on:click="deleteUserId(i.u_id), setShow(), hideAddForm(), closeEditForm()"> Delete User </button>
-
+            
           </div>
 
         </div>
@@ -41,23 +40,30 @@
 
           <button @click="formSwitch = !formSwitch" v-show="formSwitch"> New User </button>
 
+          <div v-show="isShowAddresses" v-for="j in newVarAddresses" :key = j.a_id class = "addressTable" > 
+            Street: {{j.street}}
+            <br>Area: {{j.area}} 
+            <br>Pincode: {{j.pincode}} 
+            <br>City: {{j.city}}
+          </div>
+
   <!-- HERE I HAVE TO CREATE USER DETAIL FORM THAT POPS UP ONLY WHEN CREATE USER IS CLICKED, AND DISPLAYS A FORM THAT ACCEPTS DATA AND CALLS A FUNCTION ON SUBMIT CLICK WITH A JSON FORMAT PARAMETER -->
   <!-- ADD A SWITCH THAT SHOWS EITHER THE FORM OR THE NEW USER BUTTON -->
           <div class = "formStyle" v-show="!formSwitch">
 
-              <form>
-                Enter Details: <br>
+            <form>
+              Enter Details: <br>
 
-                <input v-model="userId" type="text" id="id" name="id" placeholder='User Id'><br>
-                <input v-model="firstName" type="text" id="fname" name="fname" placeholder='First Name'><br>
-                <input v-model="middleName" type="text" id="mname" name="mname" placeholder='Middle Name'><br>
-                <input v-model="lastName" type="text" id="lname" name="lname" placeholder='Last name'><br>
+              <input v-model="userId" type="text" id="id" name="id" placeholder='User Id'><br>
+              <input v-model="firstName" type="text" id="fname" name="fname" placeholder='First Name'><br>
+              <input v-model="middleName" type="text" id="mname" name="mname" placeholder='Middle Name'><br>
+              <input v-model="lastName" type="text" id="lname" name="lname" placeholder='Last name'><br>
 
-                <button @click="newUser(), preventEvent($event), setShow(), formSwitch = !formSwitch"> Create </button>
-                &emsp;
-                <button @click="formSwitch = !formSwitch, preventEvent($event)"> Cancel </button>
+              <button @click="newUser(), preventEvent($event), setShow(), formSwitch = !formSwitch"> Create </button>
+              &emsp;
+              <button @click="formSwitch = !formSwitch, preventEvent($event)"> Cancel </button>
 
-              </form>
+            </form>
 
           </div>
 
@@ -65,11 +71,9 @@
 
       </div>
 
-<!-- formSwitchForEdit IS YET TO BE DECLARED, IT IS JUST ANOTHER VARIABLE FOR MAKING EDIT FORM VISIBLE AND INVISIBLE. placeholder='First Name' -->
-
       <div class = "formStyle" v-show="formSwitchForEdit"> 
-        <!-- A DIV FOR EDIT FORM -->
-        
+        <!-- a DIV FOR EDIT FORM -->     
+
         <form> 
           Edit details: <br> 
 
@@ -79,40 +83,20 @@
           <input v-model="lastNameForEdit" type="text" id="lname" name="lname"><br>
 
           <button @click="closeEditForm(), editUserId(), preventEvent($event), setShow()"> Update </button>
-          &emsp;
+                &emsp;
           <button @click="preventEvent($event), closeEditForm()"> Cancel </button>
 
         </form>
 
       </div>
 
-      <div v-show="isShowAddresses"> 
+      <!-- THIS IS DEDICATED DELETE MESSAGE SHOWING DIV -->
+      <div v-show="isShowResponse">   <p> {{reqResponse}} </p>    </div>  
 
-        <div v-for="j in newVarAddresses" :key = j.a_id class = "addressTable"> 
-
-          <!-- <div> {{j.a_id}} </div> -->
-          <div> 
-            Street: {{j.street}}
-            <br>Area: {{j.area}} 
-            <br>Pincode: {{j.pincode}} 
-            <br>City: {{j.city}}  
-          </div>
-
-        </div>
-
-      </div>
-
-<!-- THIS IS DEDICATED DELETE MESSAGE SHOWING DIV -->
-      <div v-show="isShowResponse">
-
-        <p> {{reqResponse}} </p>
-
-      </div>  
-
-</div>
+  </div>
 
 </template>
-
+// S------------------------------C------------------------------R------------------------------I------------------------------P------------------------------T------------------------------           
 <script>
 
 import axios from 'axios';
@@ -125,7 +109,6 @@ export default {
       newVar: [],
       specificUser: [],
       newVarAddresses: [],
-      // newVar1: {},
       reqResponse: '',
       userIdForGet: '',
       newVarFirstName: '',
@@ -142,11 +125,11 @@ export default {
       lastNameForEdit: "",
       firstNameForEdit: "",
       middleNameForEdit: "",
+      increment: Number,
     };
   },
 
   mounted() {
-    // this.getUsers();
     this.function();
   
     // try {
@@ -158,9 +141,9 @@ export default {
         // }
     // v-show = "formSwitchForEdit"
 
-      },
+    },
+
   methods: {
-    
     
     function(){
       this.isShow = false;
@@ -178,6 +161,7 @@ export default {
     showEditForm() {
       this.formSwitchForEdit = true;
     },
+
     closeEditForm() {
       this.formSwitchForEdit = false;
     },
@@ -185,16 +169,10 @@ export default {
     showAddForm() {
       this.isShowAddresses = true;
     },
+
     hideAddForm() {
       this.isShowAddresses = false;
     },
-
-    // testGetIdFunction(id) {
-    //   var url = 'http://localhost:5434/v1/users/' + id
-    //   axios.get(url). then (response =>
-    //     this.specificUser = response.data
-    //   )
-    // },
 
     async deleteUserId (id) {
       var url = 'http://localhost:5434/v1/users/' + id + '/'
@@ -209,7 +187,6 @@ export default {
 
       var url = 'http://localhost:5434/v1/users/' + this.userIdForEdit + '/'
       let jsonRes = '{ "first_name":' + '"' + this.firstNameForEdit + '",' + '"middle_name":' + '"' + this.middleNameForEdit + '",' +  '"last_name":' + '"' + this.lastNameForEdit + '" }'
-// console.log(jsonRes);
       await axios.put(url,jsonRes).then(
           response =>
         this.reqResponse = response.data,
@@ -284,8 +261,7 @@ export default {
 };
 
 </script>
-
-
+// S------------------------------T------------------------------Y------------------------------L------------------------------E------------------------------
 <style>
 
 #app {
