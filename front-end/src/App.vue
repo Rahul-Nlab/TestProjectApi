@@ -29,11 +29,11 @@
 
             <div class="tableActions">
 
-              <button @click="getUserAddresses(i), showAddForm(), closeEditForm(), setShow(), j=i"> Show Address </button>
+              <button @click="getUserAddresses(i), showAddForm(), closeEditForm(), setShow(), hideNewForm(), j=i"> Show Address </button>
                     &emsp;
-              <button v-on:click="setEditValues(i), showEditForm(), hideAddForm()"> Edit </button>
+              <button v-on:click="setEditValues(i), showEditForm(), hideAddForm(), hideNewForm()"> Edit </button>
                     &emsp;
-              <button v-on:click="deleteUserId(i.u_id), setShow(), hideAddForm(), closeEditForm()"> Delete User </button>
+              <button v-on:click="deleteUserId(i.u_id), setShow(), hideAddForm(), closeEditForm(), hideNewForm()"> Delete User </button>
               
             </div>
 
@@ -56,12 +56,12 @@
        <!-- </div>  -->
           
         <div>
-          <button @click="formSwitch = !formSwitch" v-show="formSwitch"> New User </button>
+          <button @click="showNewForm(), hideAddForm()" v-show="!switchForNew"> New User </button>
         </div>
 
   <!-- HERE I HAVE TO CREATE USER DETAIL FORM THAT POPS UP ONLY WHEN CREATE USER IS CLICKED, AND DISPLAYS A FORM THAT ACCEPTS DATA AND CALLS A FUNCTION ON SUBMIT CLICK WITH A JSON FORMAT PARAMETER -->
   <!-- ADD A SWITCH THAT SHOWS EITHER THE FORM OR THE NEW USER BUTTON -->
-          <div class = "formStyle" v-show="!formSwitch">
+          <div class = "formStyle" v-show="switchForNew">
 
             <form>
               Enter Details: <br>
@@ -71,9 +71,9 @@
               <input v-model="middleName" type="text" id="mname" name="mname" placeholder='Middle Name'><br>
               <input v-model="lastName" type="text" id="lname" name="lname" placeholder='Last name'><br>
 
-              <button @click="newUser(), preventEvent($event), setShow(), formSwitch = !formSwitch"> Create </button>
+              <button @click="newUser(), preventEvent($event), setShow(), hideNewForm()"> Create </button>
               &emsp;
-              <button @click="formSwitch = !formSwitch, preventEvent($event)"> Cancel </button>
+              <button @click="hideNewForm(), preventEvent($event)"> Cancel </button>
 
             </form>
 
@@ -83,7 +83,7 @@
 
       <!-- </div> -->
 
-      <div class = "formStyle" v-show="formSwitchForEdit"> 
+      <div class = "formStyle" v-show="SwitchForEdit"> 
         <!-- a DIV FOR EDIT FORM -->     
 
         <form> 
@@ -125,10 +125,10 @@ export default {
       userIdForGet: '',
       newVarFirstName: '',
       isShow: Boolean,
-      formSwitch: Boolean,
+      switchForNew: Boolean,
+      SwitchForEdit: Boolean,
       isShowResponse: Boolean,
       isShowAddresses: Boolean,
-      formSwitchForEdit: Boolean,
       userId: "",
       lastName: "",
       firstName: "",
@@ -151,7 +151,7 @@ export default {
     // } catch(e) {
       // } finally {
         // }
-    // v-show = "formSwitchForEdit"
+    // v-show = "SwitchForEdit"
 
     },
 
@@ -160,22 +160,30 @@ export default {
     function(){
       this.isShow = false;
       this.switch0 = false;
-      this.formSwitch = true;
+      this.switchForNew = false;
       this.deleteSwitch = false;
+      this.SwitchForEdit = false;
       this.isShowAddresses = false;
-      this.formSwitchForEdit = false;
     },
 
     preventEvent(event) {
       event.preventDefault();
     },
 
+    showNewForm() {
+      this.switchForNew = true;
+    },
+
+    hideNewForm() {
+      this.switchForNew = false;
+    },
+
     showEditForm() {
-      this.formSwitchForEdit = true;
+      this.SwitchForEdit = true;
     },
 
     closeEditForm() {
-      this.formSwitchForEdit = false;
+      this.SwitchForEdit = false;
     },
 
     showAddForm() {
