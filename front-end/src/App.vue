@@ -17,35 +17,47 @@
 
         </div>
 
-        <div class = "userTable" v-for="i in newVar" :key = i.u_id >
+      <!-- <div> -->
 
-          <div class="tableId"> {{i.u_id}} </div>
-          <div class="tableFirstName"> {{i.first_name}} </div>
-          <div class="tableMiddleName"> {{i.middle_name}} </div>
-          <div class="tableLastName"> {{i.last_name}} </div>
+        <div v-for="i in newVar" :key = i.u_id >
+          <div class = "userTable">
 
-          <div class="tableActions">
+            <div class="tableId"> {{i.u_id}} </div>
+            <div class="tableFirstName"> {{i.first_name}} </div>
+            <div class="tableMiddleName"> {{i.middle_name}} </div>
+            <div class="tableLastName"> {{i.last_name}} </div>
 
-            <button @click="getUserAddresses(i), showAddForm(), closeEditForm(), setShow()"> Show Address </button>
-                  &emsp;
-            <button v-on:click="setEditValues(i), showEditForm(), hideAddForm()"> Edit </button>
-                  &emsp;
-            <button v-on:click="deleteUserId(i.u_id), setShow(), hideAddForm(), closeEditForm()"> Delete User </button>
-            
+            <div class="tableActions">
+
+              <button @click="getUserAddresses(i), showAddForm(), closeEditForm(), setShow(), j=i"> Show Address </button>
+                    &emsp;
+              <button v-on:click="setEditValues(i), showEditForm(), hideAddForm()"> Edit </button>
+                    &emsp;
+              <button v-on:click="deleteUserId(i.u_id), setShow(), hideAddForm(), closeEditForm()"> Delete User </button>
+              
+            </div>
+
+          </div>
+
+          <div v-if="isShowAddresses & i===j" class = "addressTable" >
+            <div v-for="j in newVarAddresses" :key = j.a_id class = "addressSpecific" >
+                
+                <br>Street: {{j.street}}
+                <br>Area: {{j.area}} 
+                <br>Pincode: {{j.pincode}} 
+                <br>City: {{j.city}}
+                <!-- &emsp; -->
+              
+            </div>
           </div>
 
         </div>
 
-        <div >
-
+       <!-- </div>  -->
+          
+        <div>
           <button @click="formSwitch = !formSwitch" v-show="formSwitch"> New User </button>
-
-          <div v-show="isShowAddresses" v-for="j in newVarAddresses" :key = j.a_id class = "addressTable" > 
-            Street: {{j.street}}
-            <br>Area: {{j.area}} 
-            <br>Pincode: {{j.pincode}} 
-            <br>City: {{j.city}}
-          </div>
+        </div>
 
   <!-- HERE I HAVE TO CREATE USER DETAIL FORM THAT POPS UP ONLY WHEN CREATE USER IS CLICKED, AND DISPLAYS A FORM THAT ACCEPTS DATA AND CALLS A FUNCTION ON SUBMIT CLICK WITH A JSON FORMAT PARAMETER -->
   <!-- ADD A SWITCH THAT SHOWS EITHER THE FORM OR THE NEW USER BUTTON -->
@@ -69,7 +81,7 @@
 
         </div>
 
-      </div>
+      <!-- </div> -->
 
       <div class = "formStyle" v-show="formSwitchForEdit"> 
         <!-- a DIV FOR EDIT FORM -->     
@@ -304,13 +316,17 @@ export default {
 
 .addressTable {
   display: flex;
+}
+
+.addressSpecific {
   margin-bottom: 20px;
   border: 1px dashed #595959;
   width: fit-content;
-  padding: 8px;
-  align-items: left;
+  padding: 5px;
   text-align: left;
-
+  display: flex;
+  width: fit-content;
+  margin-right: 20px;
 }
 
 .userTable {
