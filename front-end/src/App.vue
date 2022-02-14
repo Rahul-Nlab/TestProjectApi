@@ -94,7 +94,7 @@
           <input v-model="middleNameForEdit" type="text" id="mname" name="mname"><br>
           <input v-model="lastNameForEdit" type="text" id="lname" name="lname"><br>
 
-          <button @click="closeEditForm(), editUserId(), preventEvent($event), setShow()"> Update </button>
+          <button @click="closeEditForm(), preventEvent($event), editUserId(), setShow()"> Update </button>
                 &emsp;
           <button @click="preventEvent($event), closeEditForm()"> Cancel </button>
 
@@ -196,14 +196,33 @@ export default {
     },
 
     async editUserId() {
+      if (this.validateNames(this.firstNameForEdit, this.middleNameForEdit, this.lastNameForEdit)) {
+        var url = 'http://localhost:5434/v1/users/' + this.userIdForEdit + '/'
+        let jsonRes = '{ "first_name":' + '"' + this.firstNameForEdit + '",' + '"middle_name":' + '"' + this.middleNameForEdit + '",' +  '"last_name":' + '"' + this.lastNameForEdit + '" }'
+        await axios.put(url,jsonRes).then(
+            response =>
+          this.reqResponse = response.data,
+        );
+        this.getUsers();
+      }
+    },
 
-      var url = 'http://localhost:5434/v1/users/' + this.userIdForEdit + '/'
-      let jsonRes = '{ "first_name":' + '"' + this.firstNameForEdit + '",' + '"middle_name":' + '"' + this.middleNameForEdit + '",' +  '"last_name":' + '"' + this.lastNameForEdit + '" }'
-      await axios.put(url,jsonRes).then(
-          response =>
-        this.reqResponse = response.data,
-      );
-      this.getUsers();
+    validateNames(first, middle, last) {
+      // validation here
+      let x = /[^A-Za-z]/
+      if ( first == "" || middle == "" || last == ""){
+        this.reqResponse = "Names cannot be empty.";
+        return false;
+
+      } else if ( x.test(first) || x.test(middle) || x.test(last)){
+        this.reqResponse = "Names cannot contain Symbols/Numbers";
+        return false;
+
+      } else {
+        // this.editUserId()
+        return true;
+      }
+
     },
 
     setEditValues(i) {
@@ -214,58 +233,29 @@ export default {
     },
 
     async newUser () {
+      if (this.validateNames(this.firstName, this.middleName, this.lastName)) {
+        let url
+        
+        if (this.userId === '' ) {
+          url = 'http://localhost:5434/v1/users/'
+        } else {
+          url = 'http://localhost:5434/v1/users/' + this.userId + '/'
+        }
 
-      let url
-      
-      if (this.userId === '' ) {
-        url = 'http://localhost:5434/v1/users/'
-      } else {
-        url = 'http://localhost:5434/v1/users/' + this.userId + '/'
+          let jsonRes = '{ "first_name":' + '"' + this.firstName + '",' + '"middle_name":' + '"' + this.middleName + '",' +  '"last_name":' + '"' + this.lastName + '" }'
+
+          await axios.post(url, jsonRes).then( response =>
+          this.reqResponse = response.data,
+          );
+
+          this.userId = '';
+          this.firstName = '';
+          this.middleName = '';
+          this.lastName = '';
+
+          this.getUsers();
       }
-
-      // if (this.firstName === "" || this.middleName === "" || this.lastName === "") {
-      //   this.reqResponse = "Either of names can't be empty";
-      // } else {
-
-        let jsonRes = '{ "first_name":' + '"' + this.firstName + '",' + '"middle_name":' + '"' + this.middleName + '",' +  '"last_name":' + '"' + this.lastName + '" }'
-
-        await axios.post(url, jsonRes).then( response =>
-        this.reqResponse = response.data,
-        );
-
-        this.userId = '';
-        this.firstName = '';
-        this.middleName = '';
-        this.lastName = '';
-
-        this.getUsers();
-      // }
     },
-
-    // async newUser () {
-
-    //   let url
-      
-    //   if (this.userId === '' ) {
-    //     url = 'http://localhost:5434/v1/users/'
-    //   } else {
-    //     url = 'http://localhost:5434/v1/users/' + this.userId + '/'
-    //   }
-
-    //   let jsonRes = '{ "first_name":' + '"' + this.firstName + '",' + '"middle_name":' + '"' + this.middleName + '",' +  '"last_name":' + '"' + this.lastName + '" }'
-
-    //   await axios.post(url, jsonRes).then( response =>
-    //   this.reqResponse = response.data,
-    //   );
-
-    //   this.userId = '';
-    //   this.firstName = '';
-    //   this.middleName = '';
-    //   this.lastName = '';
-
-    //   this.getUsers();
-      
-    // },
 
     async getUsers() {
       await axios.get('http://localhost:5434/v1/users/').then( response =>
@@ -297,6 +287,7 @@ export default {
         console.log("true");
       }
     }, 
+
 
   },
 };
