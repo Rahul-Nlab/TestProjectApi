@@ -211,20 +211,49 @@ export default {
         url = 'http://localhost:5434/v1/users/' + this.userId + '/'
       }
 
-      let jsonRes = '{ "first_name":' + '"' + this.firstName + '",' + '"middle_name":' + '"' + this.middleName + '",' +  '"last_name":' + '"' + this.lastName + '" }'
+      // if (this.firstName === "" || this.middleName === "" || this.lastName === "") {
+      //   this.reqResponse = "Either of names can't be empty";
+      // } else {
 
-      await axios.post(url, jsonRes).then( response =>
-      this.reqResponse = response.data,
-      );
+        let jsonRes = '{ "first_name":' + '"' + this.firstName + '",' + '"middle_name":' + '"' + this.middleName + '",' +  '"last_name":' + '"' + this.lastName + '" }'
 
-      this.userId = '';
-      this.firstName = '';
-      this.middleName = '';
-      this.lastName = '';
+        await axios.post(url, jsonRes).then( response =>
+        this.reqResponse = response.data,
+        );
 
-      this.getUsers();
+        this.userId = '';
+        this.firstName = '';
+        this.middleName = '';
+        this.lastName = '';
 
+        this.getUsers();
+      // }
     },
+
+    // async newUser () {
+
+    //   let url
+      
+    //   if (this.userId === '' ) {
+    //     url = 'http://localhost:5434/v1/users/'
+    //   } else {
+    //     url = 'http://localhost:5434/v1/users/' + this.userId + '/'
+    //   }
+
+    //   let jsonRes = '{ "first_name":' + '"' + this.firstName + '",' + '"middle_name":' + '"' + this.middleName + '",' +  '"last_name":' + '"' + this.lastName + '" }'
+
+    //   await axios.post(url, jsonRes).then( response =>
+    //   this.reqResponse = response.data,
+    //   );
+
+    //   this.userId = '';
+    //   this.firstName = '';
+    //   this.middleName = '';
+    //   this.lastName = '';
+
+    //   this.getUsers();
+      
+    // },
 
     async getUsers() {
       await axios.get('http://localhost:5434/v1/users/').then( response =>
