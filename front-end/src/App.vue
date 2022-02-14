@@ -10,52 +10,28 @@
         <div class = "userTable">
 
           <div class = "tableId"> <b>User Id</b> </div>
-
           <div class = "tableFirstName"> <b>First Name</b> </div>
-
           <div class = "tableMiddleName"> <b>Middle Name</b> </div>
-
           <div class = "tableLastName"> <b>Last Name</b> </div>
-
           <div class = "tableActions"> <b> Actions </b> </div>
 
         </div>
 
         <div class = "userTable" v-for="i in newVar" :key = i.u_id >
 
-          <div class="tableId">
-
-            {{i.u_id}}
-
-          </div>
-
-          <div class="tableFirstName">
-
-            {{i.first_name}}
-
-          </div>
-
-
-          <div class="tableMiddleName">
-
-            {{i.middle_name}}
-
-          </div>
-
-          <div class="tableLastName">
-
-            {{i.last_name}}
-
-          </div>
+          <div class="tableId"> {{i.u_id}} </div>
+          <div class="tableFirstName"> {{i.first_name}} </div>
+          <div class="tableMiddleName"> {{i.middle_name}} </div>
+          <div class="tableLastName"> {{i.last_name}} </div>
 
           <div class="tableActions">
-
-            <button> Show Address </button>
+<!-- @click= "seeAddress(i), showAddressForm()" -->
+            <button @click="getUserAddresses(i), showAddForm(), closeEditForm(), setShow()"> Show Address </button>
                   &emsp;
-            <button v-on:click="setEditValues(i), showEditForm()"> Edit </button>
+            <button v-on:click="setEditValues(i), showEditForm(), hideAddForm()"> Edit </button>
             <!-- editUserId(i.u_id), -->
                   &emsp;
-            <button v-on:click="deleteUserId(i.u_id), setShow()"> Delete User </button>
+            <button v-on:click="deleteUserId(i.u_id), setShow(), hideAddForm(), closeEditForm()"> Delete User </button>
 
           </div>
 
@@ -87,39 +63,51 @@
 
         </div>
 
-
       </div>
 
 <!-- formSwitchForEdit IS YET TO BE DECLARED, IT IS JUST ANOTHER VARIABLE FOR MAKING EDIT FORM VISIBLE AND INVISIBLE. placeholder='First Name' -->
 
-        <div class = "formStyle" v-show="formSwitchForEdit"> 
-          <!-- A DIV FOR EDIT FORM -->
-          
-          <form> 
-            Edit details: <br> 
+      <div class = "formStyle" v-show="formSwitchForEdit"> 
+        <!-- A DIV FOR EDIT FORM -->
+        
+        <form> 
+          Edit details: <br> 
 
-            <!-- <input v-model="firstName" type="text" id="fname" name="fname"  value=newVarFirstName><br> -->
-            <input v-model="firstNameForEdit" type="text" id="fname" name="fname"><br>
-            <input v-model="middleNameForEdit" type="text" id="mname" name="mname"><br>
-            <input v-model="lastNameForEdit" type="text" id="lname" name="lname"><br>
+          <!-- <input v-model="firstName" type="text" id="fname" name="fname"  value=newVarFirstName><br> -->
+          <input v-model="firstNameForEdit" type="text" id="fname" name="fname"><br>
+          <input v-model="middleNameForEdit" type="text" id="mname" name="mname"><br>
+          <input v-model="lastNameForEdit" type="text" id="lname" name="lname"><br>
 
-            <button @click="closeEditForm(), editUserId(), preventEvent($event), setShow()"> Update </button>
-            &emsp;
-            <button @click="preventEvent($event), closeEditForm()"> Cancel </button>
+          <button @click="closeEditForm(), editUserId(), preventEvent($event), setShow()"> Update </button>
+          &emsp;
+          <button @click="preventEvent($event), closeEditForm()"> Cancel </button>
 
-          </form>
+        </form>
+
+      </div>
+
+      <div v-show="isShowAddresses"> 
+
+        <div v-for="j in newVarAddresses" :key = j.a_id class = "addressTable"> 
+
+          <!-- <div> {{j.a_id}} </div> -->
+          <div> 
+            Street: {{j.street}}
+            <br>Area: {{j.area}} 
+            <br>Pincode: {{j.pincode}} 
+            <br>City: {{j.city}}  
+          </div>
 
         </div>
-          <!-- <div> ADDRESS
 
-          </div> -->
+      </div>
 
-    <!-- THIS IS DEDICATED DELETE MESSAGE SHOWING DIV -->
-          <div v-show="isShowDelete">
+<!-- THIS IS DEDICATED DELETE MESSAGE SHOWING DIV -->
+      <div v-show="isShowResponse">
 
-            <p> {{reqResponse}} </p>
+        <p> {{reqResponse}} </p>
 
-  </div>
+      </div>  
 
 </div>
 
@@ -135,40 +123,42 @@ export default {
   data() {
     return {
       newVar: [],
-      // newVar1: {},
-      newVarFirstName: '',
       specificUser: [],
+      newVarAddresses: [],
+      // newVar1: {},
       reqResponse: '',
       userIdForGet: '',
-      formSwitchForEdit: Boolean,
-      isShowDelete: Boolean,
-      formSwitch: Boolean,
+      newVarFirstName: '',
       isShow: Boolean,
+      formSwitch: Boolean,
+      isShowResponse: Boolean,
+      isShowAddresses: Boolean,
+      formSwitchForEdit: Boolean,
       userId: "",
+      lastName: "",
       firstName: "",
       middleName: "",
-      lastName: "",
       userIdForEdit: "",
+      lastNameForEdit: "",
       firstNameForEdit: "",
       middleNameForEdit: "",
-      lastNameForEdit: "",
     };
   },
 
   mounted() {
     // this.getUsers();
     this.function();
-  },
   
     // try {
-    //   const response = await axios.get("http://localhost:5434/v1/users/");
+      //   const response = await axios.get("http://localhost:5434/v1/users/");
     //   this.newVar = response.data
     //   console.log(response.data);
     // } catch(e) {
-    // } finally {
-    // }
+      // } finally {
+        // }
     // v-show = "formSwitchForEdit"
 
+      },
   methods: {
     
     
@@ -177,6 +167,7 @@ export default {
       this.switch0 = false;
       this.formSwitch = true;
       this.deleteSwitch = false;
+      this.isShowAddresses = false;
       this.formSwitchForEdit = false;
     },
 
@@ -189,6 +180,13 @@ export default {
     },
     closeEditForm() {
       this.formSwitchForEdit = false;
+    },
+
+    showAddForm() {
+      this.isShowAddresses = true;
+    },
+    hideAddForm() {
+      this.isShowAddresses = false;
     },
 
     // testGetIdFunction(id) {
@@ -261,12 +259,26 @@ export default {
     },
 
     setShow () {
-      this.isShowDelete = true;
+      this.isShowResponse = true;
       setTimeout(() => {
-        this.isShowDelete = false;
+        this.isShowResponse = false;
+        this.reqResponse = '';
       }, 1500);
     },
 
+    async getUserAddresses(i) {
+      let url = "http://localhost:5434/v1/users/" + i.u_id + "/addresses/"
+      await axios.get(url).then( response =>
+        this.newVarAddresses = response.data
+        ).catch( err => {
+          console.log(err);
+      })
+      console.log(this.newVarAddresses);
+      if (this.newVarAddresses.length === 0 ) {
+        this.reqResponse = "No Addresses";
+        console.log("true");
+      }
+    }, 
 
   },
 };
@@ -283,6 +295,17 @@ export default {
   text-align: center;
   color: #2C3E50;
   margin-top: 60px;
+}
+
+.addressTable {
+  display: flex;
+  margin-bottom: 20px;
+  border: 1px dashed #595959;
+  width: fit-content;
+  padding: 8px;
+  align-items: left;
+  text-align: left;
+
 }
 
 .userTable {
