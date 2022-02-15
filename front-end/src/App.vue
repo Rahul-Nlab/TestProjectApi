@@ -218,12 +218,12 @@ export default {
     validateNames(first, middle, last) {
       // validation here
       let x = /[^A-Za-z]/
-      if ( first == "" || middle == "" || last == ""){
-        this.reqResponse = "Names cannot be empty.";
+      if ( x.test(first) || x.test(middle) || x.test(last)){
+        this.reqResponse = "Names cannot contain Symbols/Numbers";
         return false;
 
-      } else if ( x.test(first) || x.test(middle) || x.test(last)){
-        this.reqResponse = "Names cannot contain Symbols/Numbers";
+      } else if ( first == "" || middle == "" || last == ""){
+        this.reqResponse = "Names cannot be empty.";
         return false;
 
       } else {
