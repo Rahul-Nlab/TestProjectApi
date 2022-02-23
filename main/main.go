@@ -32,7 +32,7 @@ func main() {
 	fmt.Println("Up!")
 
 	// router.HandleFunc("/v1/users/", h.GetUsersRequest).Methods(http.MethodGet)
-	router.GET("/v1/users/", h.GetUsersRequest)
+	router.GET("/v1/users/", h.GetUsersRequest())
 	router.HandleFunc("/v1/users/{id}/", h.GetUsersRequest).Methods(http.MethodGet)
 
 	router.HandleFunc("/v1/users/", h.CreateUserRequest).Methods(http.MethodPost)

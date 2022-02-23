@@ -3,6 +3,7 @@ package databases
 import (
 	"database/sql"
 	"fmt"
+	"testproject/handlers"
 )
 
 const (
@@ -20,5 +21,6 @@ func Setup() *sql.DB {
 		fmt.Println("There was an error while connecting to the database.")
 		return nil
 	}
+	handlers.New()
 	return db
 }
