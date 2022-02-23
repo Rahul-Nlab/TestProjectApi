@@ -1,6 +1,6 @@
 package main
 
-//THE MAIN VERSION
+//THE ORGANISED VERSION
 import (
 	"fmt"
 	"log"
