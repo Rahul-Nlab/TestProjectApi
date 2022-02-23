@@ -19,7 +19,6 @@ func CheckErr(e error) {
 
 type Handlers struct {
 	user business.Business
-	//PENDING
 }
 
 func New(user business.Business) Handlers {
@@ -31,7 +30,7 @@ func New(user business.Business) Handlers {
 func (h Handlers) GetUsersRequest(w http.ResponseWriter, r *http.Request) {
 	
 	fmt.Println("User GET served")
-	// w.Header().Set("Access-Control-Allow-Origin", r.Header.Ge`t("Origin"))
+	// w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
 	// w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	
 	vars := mux.Vars(r)

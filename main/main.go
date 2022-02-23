@@ -10,7 +10,9 @@ import (
 	"testproject/handlers"
 
 	muxhan "github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
+
+	// "github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
@@ -24,11 +26,13 @@ func main() {
 
 	h := handlers.New(business.New(db))
 
-	router := mux.NewRouter()
+	// router := mux.NewRouter()
+	router := echo.New()
 
 	fmt.Println("Up!")
 
-	router.HandleFunc("/v1/users/", h.GetUsersRequest).Methods(http.MethodGet)
+	// router.HandleFunc("/v1/users/", h.GetUsersRequest).Methods(http.MethodGet)
+	router.GET("/v1/users/", h.GetUsersRequest)
 	router.HandleFunc("/v1/users/{id}/", h.GetUsersRequest).Methods(http.MethodGet)
 
 	router.HandleFunc("/v1/users/", h.CreateUserRequest).Methods(http.MethodPost)
