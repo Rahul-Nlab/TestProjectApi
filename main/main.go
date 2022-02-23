@@ -1,6 +1,6 @@
 package main
 
-//this is all packages
+//THE MAIN VERSION
 import (
 	"fmt"
 	"log"
