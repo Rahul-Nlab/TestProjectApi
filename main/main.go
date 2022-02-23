@@ -1,6 +1,10 @@
 package main
 
+<<<<<<< HEAD
 //THE MAIN VERSION
+=======
+//this is newOrganisedVersion branch
+>>>>>>> 500ba101a9811c81b3ace99fbbd502a21e936c78
 import (
 	"fmt"
 	"log"
