@@ -19,7 +19,6 @@ func CheckErr(e error) {
 
 type Handlers struct {
 	user business.Business
-	//PENDING
 }
 
 func New(user business.Business) Handlers {
